@@ -525,7 +525,7 @@ public final class StateReadyForCapture extends StateImpl {
                 mResourceCaptureTools.get().getModuleUI().cancelCountDown();
                 mResourceCaptureTools.get().getModuleUI().showPictureCaptureUI();
                 mResourceCaptureTools.get().getModuleUI().initializeZoom(
-                        mResourceCaptureTools.get().getResourceOpenedCamera().get().getZoomRatio());
+                        mResourceCaptureTools.get().getResourceOpenedCamera().get().getCamera().getMaxZoom());
             }
         });
         return NO_CHANGE;

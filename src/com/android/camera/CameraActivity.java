@@ -1795,7 +1795,7 @@ public class CameraActivity extends QuickActivity
         }
     }
 
-    private void setRotationAnimation() {
+    protected void setRotationAnimation() {
         int rotationAnimation = WindowManager.LayoutParams.ROTATION_ANIMATION_ROTATE;
         rotationAnimation = WindowManager.LayoutParams.ROTATION_ANIMATION_CROSSFADE;
         Window win = getWindow();
@@ -1942,10 +1942,14 @@ public class CameraActivity extends QuickActivity
                     Keys.KEY_HAS_SEEN_PERMISSIONS_DIALOGS))) {
             // TODO: Convert PermissionsActivity into a dialog so we
             // don't lose the state of CameraActivity.
-            Intent intent = new Intent(this, PermissionsActivity.class);
-            startActivity(intent);
-            finish();
+            startPermissionsActivity();
         }
+    }
+
+    protected void startPermissionsActivity() {
+        Intent intent = new Intent(this, PermissionsActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void preloadFilmstripItems() {

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.android.camera2">
+
+    <application
+        android:name="com.plus.camera.app.CameraApp"
+        tools:replace="name">
+        <activity
+            android:name="com.android.camera.CameraActivity"
+            tools:node="remove"/>
+
+        <activity
+            android:name="com.android.camera.PermissionsActivity"
+            tools:node="remove" />
+
+        <activity-alias
+            android:name="com.android.camera.CameraLauncher"
+            android:screenOrientation="${SCREEN_ORIENTATION}"
+            android:targetActivity="com.plus.camera.CameraActivity"
+            tools:replace="screenOrientation, targetActivity"/>
+
+        <activity
+            android:name="com.android.camera.CaptureActivity"
+            tools:node="remove" />
+
+        <!-- Video camera and capture use the Camcorder label and icon. -->
+        <activity-alias
+            android:name="com.android.camera.VideoCamera"
+            android:screenOrientation="${SCREEN_ORIENTATION}"
+            android:targetActivity="com.plus.camera.CaptureActivity"
+            tools:replace="screenOrientation, targetActivity">
+        </activity-alias>
+
+        <activity
+            android:name="com.android.camera.SecureCameraActivity"
+            tools:node="remove" />
+
+        <activity
+            android:name="com.android.camera.settings.CameraSettingsActivity"
+            tools:node="remove" />
+
+
+
+
+        <activity
+            android:name="com.plus.camera.CameraActivity"
+            android:clearTaskOnLaunch="true"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="${SCREEN_ORIENTATION}"
+            android:taskAffinity="com.plus.camera.CameraActivity"
+            android:theme="@style/Theme.Camera"
+            android:exported="true"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
+            <intent-filter>
+                <action android:name="android.media.action.STILL_IMAGE_CAMERA" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.android.keyguard.layout"
+                android:resource="@layout/keyguard_widget" />
+        </activity>
+
+        <activity
+            android:name="com.plus.camera.PermissionsActivity"
+            android:screenOrientation="${SCREEN_ORIENTATION}"
+            android:label="@string/app_name"
+            android:excludeFromRecents="true"
+            android:parentActivityName="com.plus.camera.CameraActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.plus.camera.CameraActivity" />
+        </activity>
+
+        <activity
+            android:name="com.plus.camera.CaptureActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Camera"
+            android:screenOrientation="${SCREEN_ORIENTATION}"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            android:exported="true"
+            android:visibleToInstantApps="true">
+            <intent-filter>
+                <action android:name="android.media.action.IMAGE_CAPTURE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.plus.camera.SecureCameraActivity"
+            android:clearTaskOnLaunch="true"
+            android:screenOrientation="${SCREEN_ORIENTATION}"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:excludeFromRecents="true"
+            android:label="@string/app_name"
+            android:taskAffinity="com.plus.camera.SecureCameraActivity"
+            android:theme="@style/Theme.SecureCamera"
+            android:exported="true"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
+            <intent-filter>
+                <action android:name="android.media.action.STILL_IMAGE_CAMERA_SECURE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.media.action.IMAGE_CAPTURE_SECURE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.android.keyguard.layout"
+                android:resource="@layout/keyguard_widget" />
+        </activity>
+
+        <activity
+            android:name="com.plus.camera.settings.CameraSettingsActivity"
+            android:label="@string/mode_settings"
+            android:screenOrientation="${SCREEN_ORIENTATION}"
+            android:theme="@style/Theme.CameraSettings"
+            android:configChanges="keyboardHidden|orientation|screenSize">
+        </activity>
+    </application>
+</manifest>

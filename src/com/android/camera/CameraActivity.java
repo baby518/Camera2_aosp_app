@@ -85,6 +85,7 @@ import com.android.camera.app.ModuleManagerImpl;
 import com.android.camera.app.MotionManager;
 import com.android.camera.app.OrientationManager;
 import com.android.camera.app.OrientationManagerImpl;
+import com.android.camera.config.AppConfig;
 import com.android.camera.data.CameraFilmstripDataAdapter;
 import com.android.camera.data.FilmstripContentObserver;
 import com.android.camera.data.FilmstripItem;
@@ -495,8 +496,10 @@ public class CameraActivity extends QuickActivity
                 @Override
                 public void onProgressErrorClicked() {
                     FilmstripItem data = getCurrentLocalData();
-                    getServices().getCaptureSessionManager().removeErrorMessage(
-                            data.getData().getUri());
+                    if (AppConfig.isCaptureModuleSupported()) {
+                        getServices().getCaptureSessionManager().removeErrorMessage(
+                                data.getData().getUri());
+                    }
                     updateBottomControlsByData(data);
                 }
             };
@@ -884,8 +887,14 @@ public class CameraActivity extends QuickActivity
     }
 
     // Note: All callbacks come back on the main thread.
-    private final SessionListener mSessionListener =
-            new SessionListener() {
+    protected SessionListener createSessionListener() {
+        return new MySessionListener();
+    }
+
+    protected final SessionListener mSessionListener = createSessionListener();
+
+    protected class MySessionListener
+            implements SessionListener {
                 @Override
                 public void onSessionQueued(final Uri uri) {
                     Log.v(TAG, "onSessionQueued: " + uri);
@@ -1015,7 +1024,7 @@ public class CameraActivity extends QuickActivity
                 @Override
                 public void onSessionPictureDataUpdate(byte[] pictureData, int orientation) {
                 }
-            };
+    }
 
     @Override
     public Context getAndroidContext() {
@@ -1596,9 +1605,11 @@ public class CameraActivity extends QuickActivity
         mAboveFilmstripControlLayout =
                 (FrameLayout) findViewById(R.id.camera_filmstrip_content_layout);
 
-        // Add the session listener so we can track the session progress
-        // updates.
-        getServices().getCaptureSessionManager().addSessionListener(mSessionListener);
+        if (AppConfig.isCaptureModuleSupported()) {
+            // Add the session listener so we can track the session progress
+            // updates.
+            getServices().getCaptureSessionManager().addSessionListener(mSessionListener);
+        }
         mFilmstripController = ((FilmstripView) findViewById(R.id.filmstrip_view)).getController();
         mFilmstripController.setImageGap(
                 getResources().getDimensionPixelSize(R.dimen.camera_film_strip_gap));
@@ -2157,9 +2168,11 @@ public class CameraActivity extends QuickActivity
         if (mSecureCamera) {
             return;
         }
-        // There might be sessions still in flight (processed by our service).
-        // Make sure they're added to the filmstrip.
-        getServices().getCaptureSessionManager().fillTemporarySession(mSessionListener);
+        if (AppConfig.isCaptureModuleSupported()) {
+            // There might be sessions still in flight (processed by our service).
+            // Make sure they're added to the filmstrip.
+            getServices().getCaptureSessionManager().fillTemporarySession(mSessionListener);
+        }
     }
 
     @Override
@@ -2216,7 +2229,9 @@ public class CameraActivity extends QuickActivity
         if (mLocalVideosObserver != null) {
             getContentResolver().unregisterContentObserver(mLocalVideosObserver);
         }
-        getServices().getCaptureSessionManager().removeSessionListener(mSessionListener);
+        if (AppConfig.isCaptureModuleSupported()) {
+            getServices().getCaptureSessionManager().removeSessionListener(mSessionListener);
+        }
         if (mCameraAppUI != null) {
             mCameraAppUI.onDestroy();
         }
@@ -2988,11 +3003,13 @@ public class CameraActivity extends QuickActivity
         CaptureSessionManager sessionManager = getServices()
                 .getCaptureSessionManager();
 
-        if (sessionManager.hasErrorMessage(contentUri)) {
-            showProcessError(sessionManager.getErrorMessageId(contentUri));
-        } else {
-            filmstripBottomPanel.hideProgressError();
-            hideSessionProgress();
+        if (sessionManager != null) {
+            if (sessionManager.hasErrorMessage(contentUri)) {
+                showProcessError(sessionManager.getErrorMessageId(contentUri));
+            } else {
+                filmstripBottomPanel.hideProgressError();
+                hideSessionProgress();
+            }
         }
 
         /* View button */

@@ -74,7 +74,7 @@ public class ModulesInfo {
                 SettingsScopeNamespaces.PHOTO, config.isUsingCaptureModule());
     }
 
-    private static void registerPhotoModule(ModuleManager moduleManager, final int moduleId,
+    protected static void registerPhotoModule(ModuleManager moduleManager, final int moduleId,
             final String namespace, final boolean enableCaptureModule) {
         moduleManager.registerModule(new ModuleManager.ModuleAgent() {
 
@@ -105,7 +105,7 @@ public class ModulesInfo {
         });
     }
 
-    private static void registerVideoModule(ModuleManager moduleManager, final int moduleId,
+    protected static void registerVideoModule(ModuleManager moduleManager, final int moduleId,
             final String namespace) {
         moduleManager.registerModule(new ModuleManager.ModuleAgent() {
             @Override
@@ -230,7 +230,7 @@ public class ModulesInfo {
         });
     }
 
-    private static void registerCaptureIntentModule(ModuleManager moduleManager, final int moduleId,
+    protected static void registerCaptureIntentModule(ModuleManager moduleManager, final int moduleId,
             final String namespace, final boolean enableCaptureModule) {
         moduleManager.registerModule(new ModuleManager.ModuleAgent() {
             @Override

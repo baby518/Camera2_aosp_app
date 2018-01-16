@@ -28,6 +28,7 @@ import com.android.camera.util.GcamHelper;
 import com.android.camera.util.GservicesHelper;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.android.camera.config.AppConfig;
 
 /**
  * Creates the OneCamera feature configurations for the GoogleCamera app.
@@ -41,7 +42,8 @@ public class OneCameraFeatureConfigCreator {
     public static OneCameraFeatureConfig createDefault(ContentResolver contentResolver,
             MemoryManager memoryManager) {
         // Enable CaptureModule on all M devices.
-        boolean useCaptureModule = true;
+//        boolean useCaptureModule = true;
+        boolean useCaptureModule = AppConfig.isCaptureModuleSupported();
         Log.i(TAG, "CaptureModule? " + useCaptureModule);
 
         // HDR+ has multiple levels of support.

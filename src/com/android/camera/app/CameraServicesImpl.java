@@ -33,6 +33,7 @@ import com.android.camera.session.StackSaverFactory;
 import com.android.camera.settings.SettingsManager;
 import com.android.camera.util.AndroidContext;
 import com.android.camera.util.RemoteShutterHelper;
+import com.android.camera.config.AppConfig;
 
 /**
  * Functionality available to all modules and services.
@@ -54,7 +55,7 @@ public class CameraServicesImpl implements CameraServices {
     }
 
     private final MediaSaver mMediaSaver;
-    private final CaptureSessionManager mSessionManager;
+    private /*final*/ CaptureSessionManager mSessionManager;
     private final MemoryManagerImpl mMemoryManager;
     private final RemoteShutterListener mRemoteShutterListener;
     private final MotionManager mMotionManager;
@@ -62,15 +63,17 @@ public class CameraServicesImpl implements CameraServices {
 
     private CameraServicesImpl(Context context) {
         mMediaSaver = new MediaSaverImpl(context.getContentResolver());
-        PlaceholderManager mPlaceHolderManager = new PlaceholderManager(context);
-        SessionStorageManager mSessionStorageManager = SessionStorageManagerImpl.create(context);
+        if (AppConfig.isCaptureModuleSupported()) {
+            PlaceholderManager mPlaceHolderManager = new PlaceholderManager(context);
+            SessionStorageManager mSessionStorageManager = SessionStorageManagerImpl.create(context);
 
-        StackSaverFactory mStackSaverFactory = new StackSaverFactory(Storage.DIRECTORY,
-              context.getContentResolver());
-        CaptureSessionFactory captureSessionFactory = new CaptureSessionFactoryImpl(
-                mMediaSaver, mPlaceHolderManager, mSessionStorageManager, mStackSaverFactory);
-        mSessionManager = new CaptureSessionManagerImpl(
-                captureSessionFactory, mSessionStorageManager, MainThread.create());
+            StackSaverFactory mStackSaverFactory = new StackSaverFactory(Storage.DIRECTORY,
+                    context.getContentResolver());
+            CaptureSessionFactory captureSessionFactory = new CaptureSessionFactoryImpl(
+                    mMediaSaver, mPlaceHolderManager, mSessionStorageManager, mStackSaverFactory);
+            mSessionManager = new CaptureSessionManagerImpl(
+                    captureSessionFactory, mSessionStorageManager, MainThread.create());
+        }
         mMemoryManager = MemoryManagerImpl.create(context, mMediaSaver);
         mRemoteShutterListener = RemoteShutterHelper.create(context);
         mSettingsManager = new SettingsManager(context);

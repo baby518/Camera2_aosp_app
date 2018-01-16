@@ -67,7 +67,7 @@ import java.util.Locale;
  */
 @Deprecated
 public class CameraUtil {
-    private static final Log.Tag TAG = new Log.Tag("CameraUtil");
+    protected static final Log.Tag TAG = new Log.Tag("CameraUtil");
 
     private static class Singleton {
         private static final CameraUtil INSTANCE = new CameraUtil(
@@ -129,7 +129,7 @@ public class CameraUtil {
 
     private final ImageFileNamer mImageFileNamer;
 
-    private CameraUtil(Context context) {
+    protected CameraUtil(Context context) {
         mImageFileNamer = new ImageFileNamer(
               context.getString(R.string.image_file_name_format));
     }

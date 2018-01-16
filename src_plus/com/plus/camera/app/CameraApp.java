@@ -10,6 +10,7 @@ import com.android.camera.stats.profiler.Profile;
 import com.android.camera.stats.profiler.Profilers;
 import com.android.camera.util.AndroidContext;
 import com.android.camera.util.AndroidServices;
+import com.plus.camera.util.CameraUtil;
 
 
 /**
@@ -37,6 +38,8 @@ public class CameraApp extends Application {
         // Android context must be the first item initialized.
         Context context = getApplicationContext();
         AndroidContext.initialize(context);
+
+        CameraUtil.initialize(context);
 
         // This will measure and write to the exception handler if
         // the time between any two calls or the total time from

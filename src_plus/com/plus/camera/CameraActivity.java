@@ -597,12 +597,12 @@ public class CameraActivity extends com.android.camera.CameraActivity implements
         if (isFilmstripSupported()) {
             super.gotoGallery();
         } else {
-            gotoGallery(getThumbnailUri());
+            if (mSecureCamera) {
+                CameraUtil.viewLimitUris(mSecureUriList, this);
+            } else {
+                CameraUtil.viewUri(getThumbnailUri(), this);
+            }
         }
-    }
-
-    public void gotoGallery(Uri uri) {
-        CameraUtil.viewUri(uri, this);
     }
 
     @Override
@@ -633,7 +633,8 @@ public class CameraActivity extends com.android.camera.CameraActivity implements
     private void initThumbnail() {
         if (mCameraAppUI instanceof CameraAppUI) {
             if (isSecureCamera()) {
-                // refreshSecureUris();
+                // remove uris which is invalid;
+                CameraUtil.filterInvalidUris(getContentResolver(), mSecureUriList);
                 ((CameraAppUI) mCameraAppUI).initThumbnailInSecureCamera(mSecureUriList);
             } else {
                 ((CameraAppUI) mCameraAppUI).initThumbnail();
@@ -831,7 +832,11 @@ public class CameraActivity extends com.android.camera.CameraActivity implements
     /** use filmstrip open secure camera photos. */
     @Override
     public boolean isFilmstripSupported() {
-        return AppConfig.isFilmstripSupported() || isSecureCamera();
+        // use filmstrip to show secure photos.
+        if (isSecureCamera() && !CameraUtil.hasGooglePhotosApp()) {
+            return true;
+        }
+        return AppConfig.isFilmstripSupported();
     }
 
     class FilmstripManager {

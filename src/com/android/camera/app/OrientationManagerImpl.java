@@ -29,6 +29,7 @@ import android.view.OrientationEventListener;
 import android.view.Surface;
 import android.view.WindowManager;
 
+import com.android.camera.config.AppConfig;
 import com.android.camera.debug.Log;
 import com.android.camera.util.AndroidServices;
 import com.android.camera.util.ApiHelper;
@@ -81,7 +82,11 @@ public class OrientationManagerImpl implements OrientationManager {
         mActivity = activity;
         mOrientationListener = new MyOrientationEventListener(activity);
         mHandler = handler;
-        mIsDefaultToPortrait = isDefaultToPortrait(activity);
+        if (AppConfig.isLandscapeScreenSupported()) {
+            mIsDefaultToPortrait = isDefaultToPortrait(activity);
+        } else {
+            mIsDefaultToPortrait = true;
+        }
     }
 
     public void resume() {

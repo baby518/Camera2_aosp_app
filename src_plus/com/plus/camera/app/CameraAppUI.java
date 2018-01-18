@@ -1,13 +1,22 @@
 package com.plus.camera.app;
 
+import android.content.ContentResolver;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.camera.CameraModule;
 import com.android.camera.app.AppController;
+import com.android.camera.module.ModuleController;
 import com.android.camera.ui.MainActivityLayout;
-import com.android.camera.widget.RoundedThumbnailView;
 import com.plus.camera.CameraActivity;
+import com.plus.camera.Thumbnail;
+import com.plus.camera.widget.RoundedThumbnailView;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 public class CameraAppUI extends com.android.camera.app.CameraAppUI {
 
@@ -63,7 +72,6 @@ public class CameraAppUI extends com.android.camera.app.CameraAppUI {
 
     @Override
     public void onModeButtonPressed(int modeIndex) {
-        super.onModeButtonPressed(modeIndex);
     }
 
     @Override
@@ -98,11 +106,117 @@ public class CameraAppUI extends com.android.camera.app.CameraAppUI {
 
     @Override
     public void updateCaptureIndicatorThumbnail(Bitmap thumbnailBitmap, int rotation) {
-        super.updateCaptureIndicatorThumbnail(thumbnailBitmap, rotation);
+        updateCaptureIndicatorThumbnail(thumbnailBitmap, rotation, true);
+    }
+
+    private boolean needCaptureIndicator() {
+        if (mIsCaptureIntent) return false;
+        if (mSuppressCaptureIndicator || getFilmstripVisibility() == View.VISIBLE) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public void hideCaptureIndicator() {
         super.hideCaptureIndicator();
+    }
+
+    public void showCaptureIndicator() {
+        if (mRoundedThumbnailView instanceof RoundedThumbnailView) {
+            ((RoundedThumbnailView) mRoundedThumbnailView).showThumbnail();
+        }
+    }
+
+    private CameraModule getCurrentModule() {
+        ModuleController moduleController = mController.getCurrentModuleController();
+        if (moduleController instanceof CameraModule) {
+            return (CameraModule) moduleController;
+        }
+        return null;
+    }
+
+    public void initThumbnail(Uri uri) {
+        if (mRoundedThumbnailView == null) return;
+        ContentResolver contentResolver = mController.getAndroidContext().getContentResolver();
+        final WeakReference<ContentResolver> resolver = new WeakReference<ContentResolver>(contentResolver);
+        updateThumbnail(resolver, uri);
+    }
+
+    public void initThumbnail() {
+        if (mRoundedThumbnailView == null) return;
+        ContentResolver contentResolver = mController.getAndroidContext().getContentResolver();
+        final WeakReference<ContentResolver> resolver = new WeakReference<ContentResolver>(contentResolver);
+        updateThumbnail(resolver, null);
+    }
+
+    public void initThumbnailInSecureCamera(ArrayList<Uri> secureUriList) {
+        if (mRoundedThumbnailView == null) return;
+        ContentResolver contentResolver = mController.getAndroidContext().getContentResolver();
+        final WeakReference<ContentResolver> resolver = new WeakReference<ContentResolver>(contentResolver);
+        if (secureUriList != null && secureUriList.size() > 0) {
+            Uri thumbnailUri = secureUriList.get(0);
+            updateThumbnail(resolver, thumbnailUri);
+        } else {
+            clearThumbnailView();
+        }
+    }
+
+    /** update thumbnail bitmap by uri, update thumbnail bitmap by latest if pass null uri.*/
+    private void updateThumbnail(final WeakReference<ContentResolver> resolver, Uri targetUri) {
+        (new AsyncTask<Uri, Void, Thumbnail>() {
+            @Override
+            protected Thumbnail doInBackground(Uri... params) {
+                Uri uri = params[0];
+                ContentResolver cr = resolver.get();
+                if (cr == null) return null;
+                if (uri == null) {
+                    return Thumbnail.getLastThumbnail(cr);
+                } else {
+                    return Thumbnail.getThumbnailByUri(cr, uri);
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Thumbnail thumbnail) {
+                if (thumbnail != null) {
+                    if (mController instanceof CameraActivity) {
+                        ((CameraActivity) mController).setThumbnailUri(thumbnail.getUri());
+                    }
+                    startThumbnailAnimation(thumbnail.getBitmap(), false);
+                } else {
+                    clearThumbnailView();
+                }
+            }
+        }).execute(targetUri);
+    }
+
+    public void startThumbnailAnimation(Bitmap bitmap, boolean needAnimation) {
+        startCaptureIndicatorRevealAnimation(getCurrentModule().getPeekAccessibilityString());
+        updateCaptureIndicatorThumbnail(bitmap, 0, needAnimation);
+    }
+
+    private void updateCaptureIndicatorThumbnail(Bitmap thumbnailBitmap, int rotation, boolean needAnimation) {
+        if (!needCaptureIndicator()) return;
+        if (mRoundedThumbnailView instanceof RoundedThumbnailView) {
+            ((RoundedThumbnailView) mRoundedThumbnailView).setThumbnail(thumbnailBitmap, rotation, needAnimation);
+        }
+    }
+
+    private void clearThumbnailView() {
+        clearThumbnailUri();
+        if (mRoundedThumbnailView instanceof RoundedThumbnailView) {
+            ((RoundedThumbnailView) mRoundedThumbnailView).clearThumbnail();
+        }
+    }
+
+    public void clearThumbnailUri() {
+        updateThumbnailUri(null);
+    }
+
+    public void updateThumbnailUri(Uri uri) {
+        if (mController instanceof CameraActivity) {
+            ((CameraActivity) mController).setThumbnailUri(uri);
+        }
     }
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Camera resources below -->
+    <style name="Theme.Camera.UseNavigationBar" parent="@style/Theme.Camera">
+    </style>
+
+    <style name="Theme.SecureCamera.UseNavigationBar" parent="@style/Theme.SecureCamera">
+    </style>
+
+    <style name="Theme.CameraSettings.UseNavigationBar" parent="@style/Theme.CameraSettings">
+    </style>
+</resources>

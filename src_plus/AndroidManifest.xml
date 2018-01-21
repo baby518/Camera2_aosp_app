@@ -51,7 +51,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="${SCREEN_ORIENTATION}"
             android:taskAffinity="com.plus.camera.CameraActivity"
-            android:theme="@style/Theme.Camera"
+            android:theme="@style/Theme.Camera.UseNavigationBar"
             android:exported="true"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
             <intent-filter>
@@ -82,7 +82,7 @@
         <activity
             android:name="com.plus.camera.CaptureActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Camera"
+            android:theme="@style/Theme.Camera.UseNavigationBar"
             android:screenOrientation="${SCREEN_ORIENTATION}"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
@@ -102,7 +102,7 @@
             android:excludeFromRecents="true"
             android:label="@string/app_name"
             android:taskAffinity="com.plus.camera.SecureCameraActivity"
-            android:theme="@style/Theme.SecureCamera"
+            android:theme="@style/Theme.SecureCamera.UseNavigationBar"
             android:exported="true"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
             <intent-filter>

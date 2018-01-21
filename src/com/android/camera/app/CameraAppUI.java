@@ -479,7 +479,7 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     }
 
 
-    private final static Log.Tag TAG = new Log.Tag("CameraAppUI");
+    protected final static Log.Tag TAG = new Log.Tag("CameraAppUI");
 
     protected final AppController mController;
     protected final boolean mIsCaptureIntent;
@@ -517,8 +517,8 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     // App level views:
     private final FrameLayout mCameraRootView;
     private final ModeTransitionView mModeTransitionView;
-    private final MainActivityLayout mAppRootView;
-    private final ModeListView mModeListView;
+    protected final MainActivityLayout mAppRootView;
+    protected final ModeListView mModeListView;
     protected FilmstripLayout mFilmstripLayout;
     private TextureView mTextureView;
     private FrameLayout mModuleUI;
@@ -540,7 +540,7 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
     private CaptureAnimationOverlay mCaptureOverlay;
     private PreviewStatusListener mPreviewStatusListener;
     private int mModeCoverState = COVER_HIDDEN;
-    private FilmstripBottomPanel mFilmstripBottomControls;
+    protected FilmstripBottomPanel mFilmstripBottomControls;
     private FilmstripContentPanel mFilmstripPanel;
     private Runnable mHideCoverRunnable;
     private final View.OnLayoutChangeListener mPreviewLayoutChangeListener
@@ -611,7 +611,7 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
         public void onNonDecorWindowSizeChanged(int width, int height, int rotation);
     }
 
-    private final CameraModuleScreenShotProvider mCameraModuleScreenShotProvider =
+    protected final CameraModuleScreenShotProvider mCameraModuleScreenShotProvider =
             new CameraModuleScreenShotProvider() {
                 @Override
                 public Bitmap getPreviewFrame(int downSampleFactor) {
@@ -817,13 +817,8 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
         mSuppressCaptureIndicator = false;
     }
 
-    protected void setupViews() {
-        Resources res = mController.getAndroidContext().getResources();
-        mCaptureLayoutHelper = new CaptureLayoutHelper(
-                res.getDimensionPixelSize(R.dimen.bottom_bar_height_min),
-                res.getDimensionPixelSize(R.dimen.bottom_bar_height_max),
-                res.getDimensionPixelSize(R.dimen.bottom_bar_height_optimal));
-
+    private void setupViews() {
+        initCaptureLayoutHelper();
         if (mModeListView != null) {
             mModeListView.setModeSwitchListener(this);
             mModeListView.setModeListOpenListener(this);
@@ -840,6 +835,14 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
         mAppRootView.setNonDecorWindowSizeChangedListener(mCaptureLayoutHelper);
 
         initFilmstrip(mAppRootView);
+    }
+
+    protected void initCaptureLayoutHelper() {
+        Resources res = mController.getAndroidContext().getResources();
+        mCaptureLayoutHelper = new CaptureLayoutHelper(
+                res.getDimensionPixelSize(R.dimen.bottom_bar_height_min),
+                res.getDimensionPixelSize(R.dimen.bottom_bar_height_max),
+                res.getDimensionPixelSize(R.dimen.bottom_bar_height_optimal));
     }
 
     protected void initFilmstrip(ViewGroup appRootView) {

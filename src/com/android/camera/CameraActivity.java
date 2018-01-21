@@ -283,10 +283,15 @@ public class CameraActivity extends QuickActivity
     protected final Runnable mLightsOutRunnable = new Runnable() {
         @Override
         public void run() {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    BASE_SYS_UI_VISIBILITY | View.SYSTEM_UI_FLAG_LOW_PROFILE);
+            setSystemUiVisibility();
         }
     };
+
+    protected void setSystemUiVisibility() {
+        getWindow().getDecorView().setSystemUiVisibility(
+                BASE_SYS_UI_VISIBILITY | View.SYSTEM_UI_FLAG_LOW_PROFILE);
+    }
+
     protected MemoryManager mMemoryManager;
     protected MotionManager mMotionManager;
     protected final Profiler mProfiler = Profilers.instance().guard();

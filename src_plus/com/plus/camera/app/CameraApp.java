@@ -10,6 +10,7 @@ import com.android.camera.stats.profiler.Profile;
 import com.android.camera.stats.profiler.Profilers;
 import com.android.camera.util.AndroidContext;
 import com.android.camera.util.AndroidServices;
+import com.android.camera2.R;
 import com.plus.camera.util.CameraUtil;
 
 
@@ -40,6 +41,12 @@ public class CameraApp extends Application {
         AndroidContext.initialize(context);
 
         CameraUtil.initialize(context);
+
+        if (CameraUtil.needOverlayNavigationBar()) {
+            setTheme(R.style.Theme_Camera_UseNavigationBar);
+        } else {
+            setTheme(R.style.Theme_Camera_NoNavigationBar);
+        }
 
         // This will measure and write to the exception handler if
         // the time between any two calls or the total time from

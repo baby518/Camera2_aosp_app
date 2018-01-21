@@ -1,6 +1,7 @@
 package com.plus.camera.app;
 
 import android.content.ContentResolver;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -9,10 +10,14 @@ import android.view.ViewGroup;
 
 import com.android.camera.CameraModule;
 import com.android.camera.app.AppController;
+import com.android.camera.app.FilmstripBottomPanel;
 import com.android.camera.module.ModuleController;
 import com.android.camera.ui.MainActivityLayout;
+import com.android.camera2.R;
 import com.plus.camera.CameraActivity;
+import com.plus.camera.CaptureLayoutHelper;
 import com.plus.camera.Thumbnail;
+import com.plus.camera.util.CameraUtil;
 import com.plus.camera.widget.RoundedThumbnailView;
 
 import java.lang.ref.WeakReference;
@@ -32,9 +37,24 @@ public class CameraAppUI extends com.android.camera.app.CameraAppUI {
     }
 
     @Override
+    protected void initCaptureLayoutHelper() {
+        Resources res = mController.getAndroidContext().getResources();
+        mCaptureLayoutHelper = new CaptureLayoutHelper(
+                res.getDimensionPixelSize(R.dimen.bottom_bar_height_min),
+                res.getDimensionPixelSize(R.dimen.bottom_bar_height_max),
+                res.getDimensionPixelSize(R.dimen.bottom_bar_height_optimal));
+    }
+
+    @Override
     protected void initFilmstrip(ViewGroup appRootView) {
         if (isFilmstripSupported()) {
-            super.initFilmstrip(appRootView);
+            ViewGroup layout = (ViewGroup) mAppRootView.findViewById(R.id.filmstrip_bottom_panel);
+            layout.setPadding(
+                    layout.getPaddingLeft(),
+                    layout.getPaddingTop(),
+                    layout.getPaddingRight(),
+                    layout.getPaddingBottom() + CameraUtil.getNavigationBarHeight());
+            mFilmstripBottomControls = new FilmstripBottomPanel(mController, layout);
             mRoundedThumbnailView.setCallback(new RoundedThumbnailView.Callback() {
                 @Override
                 public void onHitStateFinished() {

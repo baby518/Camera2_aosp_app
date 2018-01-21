@@ -39,17 +39,17 @@ import com.android.camera2.R;
 public class CaptureLayoutHelper implements CameraAppUI.NonDecorWindowSizeChangedListener,
         PreviewStatusListener.PreviewAspectRatioChangedListener {
 
-    private final int mBottomBarMinHeight;
-    private final int mBottomBarMaxHeight;
-    private final int mBottomBarOptimalHeight;
+    protected final int mBottomBarMinHeight;
+    protected final int mBottomBarMaxHeight;
+    protected final int mBottomBarOptimalHeight;
 
-    private int mWindowWidth = 0;
-    private int mWindowHeight = 0;
+    protected int mWindowWidth = 0;
+    protected int mWindowHeight = 0;
     /** Aspect ratio of preview. It could be 0, meaning match the screen aspect ratio,
      * or a float value no less than 1f.
      */
     private float mAspectRatio = TextureViewHelper.MATCH_SCREEN;
-    private PositionConfiguration mPositionConfiguration = null;
+    protected PositionConfiguration mPositionConfiguration = null;
     private int mRotation = 0;
     private boolean mShowBottomBar = true;
 
@@ -101,7 +101,7 @@ public class CaptureLayoutHelper implements CameraAppUI.NonDecorWindowSizeChange
      * Updates bottom bar rect and preview rect. This gets called whenever
      * preview aspect ratio changes or main activity layout size changes.
      */
-    private void updatePositionConfiguration() {
+    protected void updatePositionConfiguration() {
         if (mWindowWidth == 0 || mWindowHeight == 0) {
             return;
         }
@@ -241,7 +241,7 @@ public class CaptureLayoutHelper implements CameraAppUI.NonDecorWindowSizeChange
      * @return a custom position configuration that contains bottom bar rect,
      *         preview rect and whether bottom bar should be overlaid.
      */
-    private PositionConfiguration getPositionConfiguration(int width, int height,
+    protected PositionConfiguration getPositionConfiguration(int width, int height,
             float previewAspectRatio, int rotation) {
         boolean landscape = width > height;
 

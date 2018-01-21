@@ -6,7 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
+import com.android.camera.config.AppConfig;
 import com.android.camera.debug.Log;
 
 import java.util.ArrayList;
@@ -20,16 +23,64 @@ public class CameraUtil extends com.android.camera.util.CameraUtil {
 
     private static boolean sHasGooglePhotosApp = false;
 
+    private static int sScreenWidth = 0;
+    private static int sScreenHeight = 0;
+    private static float sScreenDensity = 0;
+    private static int sDensityDpi = 0;
+    private static float sScreenAspectRatio = 0;
+    private static int sNavigationBarHeight = 0;
+    /** Overlay NavigationBar means camera layout will be displayed under NavigationBar.*/
+    private static boolean sOverlayNavigationBar = false;
+
     private CameraUtil(Context context) {
         super(context);
     }
 
     public static void initialize(Context context) {
+        if (context == null) return;
         sHasGooglePhotosApp = isPackageExist(context, GOOGLE_PHOTO_PACKAGE_NAME);
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(metrics);
+
+        DisplayMetrics realMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getRealMetrics(realMetrics);
+
+        sNavigationBarHeight = realMetrics.heightPixels - metrics.heightPixels;
+
+        sScreenWidth = realMetrics.widthPixels;
+        sScreenHeight = realMetrics.heightPixels;
+        sScreenDensity = realMetrics.density;
+        sDensityDpi = realMetrics.densityDpi;
+
+        // because MAX camera preview is 16:9, so nav bar is unnecessary if screen is bigger than 16:9.
+        if (realMetrics.heightPixels * 9 - realMetrics.widthPixels * 16 > 0) {
+            sOverlayNavigationBar = false;
+        } else {
+            sOverlayNavigationBar = true;
+        }
+
+        if (!AppConfig.isNavigationBarSupported()) {
+            sOverlayNavigationBar = false;
+        }
+
+        Log.i(TAG, "screen size : " + metrics.heightPixels + "x" + metrics.widthPixels
+                + " real screen size : " + sScreenHeight + "x" + sScreenWidth);
+        Log.i(TAG, "screenDensity : " + sScreenDensity + " densityDpi : " + sDensityDpi
+                + ", sOverlayNavigationBar " + sOverlayNavigationBar);
     }
 
     public static boolean hasGooglePhotosApp() {
         return sHasGooglePhotosApp;
+    }
+
+    public static int getNavigationBarHeight() {
+        return sOverlayNavigationBar ? sNavigationBarHeight : 0;
+    }
+
+    public static boolean needOverlayNavigationBar() {
+        return sOverlayNavigationBar;
     }
 
     public static boolean isPackageExist(Context context, String packageName) {

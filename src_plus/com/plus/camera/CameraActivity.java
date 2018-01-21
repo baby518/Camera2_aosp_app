@@ -99,6 +99,17 @@ public class CameraActivity extends com.android.camera.CameraActivity implements
     private ArrayList<Uri> mSecureUriList = new ArrayList<>();
 
     @Override
+    protected void setSystemUiVisibility() {
+        if (CameraUtil.needOverlayNavigationBar()) {
+            getWindow().getDecorView().setSystemUiVisibility(BASE_SYS_UI_VISIBILITY
+                    | View.SYSTEM_UI_FLAG_LOW_PROFILE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        } else {
+            getWindow().getDecorView().setSystemUiVisibility(BASE_SYS_UI_VISIBILITY
+                    | View.SYSTEM_UI_FLAG_LOW_PROFILE);
+        }
+    }
+
+    @Override
     public void onCameraOpened(CameraAgent.CameraProxy camera) {
         super.onCameraOpened(camera);
     }
@@ -146,6 +157,12 @@ public class CameraActivity extends com.android.camera.CameraActivity implements
         profile.mark();
 
         checkStartIntent();
+
+        if (CameraUtil.needOverlayNavigationBar()) {
+            setTheme(mSecureCamera ? R.style.Theme_SecureCamera_UseNavigationBar : R.style.Theme_Camera_UseNavigationBar);
+        } else {
+            setTheme(mSecureCamera ? R.style.Theme_SecureCamera_NoNavigationBar : R.style.Theme_Camera_NoNavigationBar);
+        }
 
         mFilmstripManager = new FilmstripManager();
         if (isFilmstripSupported()) {

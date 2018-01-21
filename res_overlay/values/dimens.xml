@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Bottom bar ui -->
+    <dimen name="bottom_bar_height_min">160dp</dimen>
+    <dimen name="bottom_bar_height_max">160dp</dimen>
+    <dimen name="bottom_bar_height_optimal">160dp</dimen>
+</resources>

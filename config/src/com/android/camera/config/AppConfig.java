@@ -14,4 +14,8 @@ public class AppConfig {
     public static boolean isFilmstripSupported() {
         return BuildConfig.USE_FILMSTRIP;
     }
+
+    public static boolean isNavigationBarSupported() {
+        return BuildConfig.SUPPORT_NAVIGATION_BAR;
+    }
 }

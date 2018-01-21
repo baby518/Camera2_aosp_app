@@ -35,7 +35,7 @@ import com.android.camera2.R;
  * Shows controls at the bottom of the screen for editing, viewing a photo
  * sphere image and creating a tiny planet from a photo sphere image.
  */
-class FilmstripBottomPanel implements CameraAppUI.BottomPanel {
+public class FilmstripBottomPanel implements CameraAppUI.BottomPanel {
     private static final int ANIM_DURATION = 150;
 
     private final AppController mController;

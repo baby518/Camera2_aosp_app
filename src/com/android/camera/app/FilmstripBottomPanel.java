@@ -39,7 +39,7 @@ public class FilmstripBottomPanel implements CameraAppUI.BottomPanel {
     private static final int ANIM_DURATION = 150;
 
     private final AppController mController;
-    private final ViewGroup mLayout;
+    protected final ViewGroup mLayout;
     private Listener mListener;
     private final View mControlLayout;
     private ImageButton mEditButton;

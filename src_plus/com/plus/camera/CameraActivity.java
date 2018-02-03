@@ -64,21 +64,17 @@ import com.android.camera.util.IntentHelper;
 import com.android.camera.util.ReleaseHelper;
 import com.android.camera.widget.FilmstripView;
 import com.android.camera2.R;
-
 import com.android.ex.camera2.portability.CameraAgent;
 import com.android.ex.camera2.portability.CameraAgentFactory;
 import com.android.ex.camera2.portability.CameraExceptionHandler;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.MemoryCategory;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.executor.FifoPriorityThreadPoolExecutor;
-
 import com.google.common.logging.eventprotos;
 import com.google.common.logging.eventprotos.ForegroundEvent.ForegroundSource;
 import com.google.common.logging.eventprotos.NavigationChange;
-
 import com.plus.camera.app.CameraAppUI;
 import com.plus.camera.module.ModulesInfo;
 import com.plus.camera.settings.CameraSettingsActivity;
@@ -740,17 +736,24 @@ public class CameraActivity extends com.android.camera.CameraActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+        return false;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        return super.onPrepareOptionsMenu(menu);
+        return false;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return false;
+        }
     }
 
     @Override
@@ -884,6 +887,9 @@ public class CameraActivity extends com.android.camera.CameraActivity implements
 
         void initController() {
             mCameraAppUI.setFilmstripBottomControlsListener(mMyFilmstripBottomControlListener);
+            if (mCameraAppUI instanceof CameraAppUI) {
+                ((CameraAppUI) mCameraAppUI).setFilmstripBottomExtendedListener(mFilmstripBottomExtendListener);
+            }
 
             mAboveFilmstripControlLayout =
                     (FrameLayout) findViewById(R.id.camera_filmstrip_content_layout);
@@ -971,6 +977,24 @@ public class CameraActivity extends com.android.camera.CameraActivity implements
             mLocalVideosObserver.setActivityPaused(true);
             if (mPreloader != null) {
                 mPreloader.cancelAllLoads();
+            }
+        }
+
+        private final CameraAppUI.BottomPanelExtended.Listener mFilmstripBottomExtendListener =
+                new CameraAppUI.BottomPanelExtended.Listener() {
+                    @Override
+                    public void onAction(int actionId) {
+                        onBottomPanelAction(actionId);
+                    }
+                };
+
+        private void onBottomPanelAction(int actionId) {
+            switch (actionId) {
+                case R.id.action_details:
+                    showDetailsDialog(mFilmstripController.getCurrentAdapterIndex());
+                    break;
+                default:
+                    break;
             }
         }
     }

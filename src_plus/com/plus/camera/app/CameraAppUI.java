@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import com.android.camera.CameraModule;
 import com.android.camera.app.AppController;
-import com.android.camera.app.FilmstripBottomPanel;
 import com.android.camera.module.ModuleController;
 import com.android.camera.ui.MainActivityLayout;
 import com.android.camera2.R;
@@ -24,6 +23,19 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class CameraAppUI extends com.android.camera.app.CameraAppUI {
+    /**
+     * The bottom controls on the filmstrip.
+     */
+    public interface BottomPanelExtended {
+        void setExtendedListener(Listener listener);
+        /**
+         * Classes implementing this interface can listen for events on the bottom
+         * controls.
+         */
+        interface Listener {
+            public void onAction(int actionId);
+        }
+    }
 
     public CameraAppUI(AppController controller, MainActivityLayout appRootView, boolean isCaptureIntent) {
         super(controller, appRootView, isCaptureIntent);
@@ -110,6 +122,13 @@ public class CameraAppUI extends com.android.camera.app.CameraAppUI {
     public void setFilmstripBottomControlsListener(BottomPanel.Listener listener) {
         if (!isFilmstripSupported()) return;
         super.setFilmstripBottomControlsListener(listener);
+    }
+
+    public void setFilmstripBottomExtendedListener(BottomPanelExtended.Listener listener) {
+        if (!isFilmstripSupported()) return;
+        if (mFilmstripBottomControls instanceof FilmstripBottomPanel) {
+            ((FilmstripBottomPanel) mFilmstripBottomControls).setExtendedListener(listener);
+        }
     }
 
     @Override

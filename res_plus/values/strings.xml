@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
      <string name="pref_switcher_title">Switchers</string>
+
+     <!-- Accessibility text for filmstrip info button [CHAR_LIMIT=NONE] -->
+     <string name="info_button_description">Info</string>
 </resources>

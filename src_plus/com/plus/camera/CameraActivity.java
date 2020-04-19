@@ -137,7 +137,7 @@ public class CameraActivity extends com.android.camera.CameraActivity implements
         mOnCreateTime = System.currentTimeMillis();
         mAppContext = getApplicationContext();
         mMainHandler = new MainHandler(this, getMainLooper());
-        mLocationManager = new LocationManager(mAppContext);
+        mLocationManager = new LocationManager(mAppContext, shouldUseNoOpLocation());
         mOrientationManager = new OrientationManagerImpl(this, mMainHandler);
         mSettingsManager = getServices().getSettingsManager();
         mSoundPlayer = new SoundPlayer(mAppContext);

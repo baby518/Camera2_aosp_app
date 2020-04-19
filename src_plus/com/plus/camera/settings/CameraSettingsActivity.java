@@ -12,8 +12,9 @@ import com.android.camera2.R;
 
 import android.app.ActionBar;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.MenuItem;
+
+import androidx.fragment.app.FragmentActivity;
 
 /**
  * Provides the settings UI for the Camera app.

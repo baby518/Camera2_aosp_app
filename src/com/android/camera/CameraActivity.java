@@ -1752,7 +1752,7 @@ public class CameraActivity extends QuickActivity
      * Incase the calling package doesn't have ACCESS_FINE_LOCATION permissions, we should not pass
      * it valid location information in exif.
      */
-    private boolean shouldUseNoOpLocation () {
+    protected boolean shouldUseNoOpLocation () {
         String callingPackage = getCallingPackage();
         if (callingPackage == null) {
             // Activity not started through startActivityForResult.

@@ -562,7 +562,7 @@ public class CameraAppUI implements ModeListView.ModeSwitchListener,
 
     private boolean mDisableAllUserInteractions;
     /** Whether to prevent capture indicator from being triggered. */
-    private boolean mSuppressCaptureIndicator;
+    protected boolean mSuppressCaptureIndicator;
 
     /** Supported HDR mode (none, hdr, hdr+). */
     private String mHdrSupportMode;

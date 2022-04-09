@@ -26,7 +26,6 @@ import android.widget.ShareActionProvider;
 
 import com.android.camera.FatalErrorHandlerImpl;
 import com.android.camera.SoundPlayer;
-import com.android.camera.Thumbnail;
 import com.android.camera.app.CameraController;
 import com.android.camera.app.LocationManager;
 import com.android.camera.app.MemoryQuery;
@@ -38,8 +37,10 @@ import com.android.camera.data.FilmstripItem;
 import com.android.camera.data.FilmstripItemUtils;
 import com.android.camera.data.GlideFilmstripManager;
 import com.android.camera.data.PhotoDataFactory;
+import com.android.camera.data.PhotoItem;
 import com.android.camera.data.PhotoItemFactory;
 import com.android.camera.data.VideoDataFactory;
+import com.android.camera.data.VideoItem;
 import com.android.camera.data.VideoItemFactory;
 import com.android.camera.debug.Log;
 import com.android.camera.device.ActiveCameraDeviceTracker;
@@ -526,6 +527,7 @@ public class CameraActivity extends com.android.camera.CameraActivity implements
         if (mResetToPreviewOnResume) {
             mCameraAppUI.resume();
             mResetToPreviewOnResume = false;
+            initThumbnail();
         }
     }
 
@@ -618,6 +620,24 @@ public class CameraActivity extends com.android.camera.CameraActivity implements
     private void onFilmstripBackToCamera() {
         if (mPendingDeletion && !mIsUndoingDeletion) {
             performDeletion();
+        }
+
+        // deletion is a Async task, so get uri from mDataAdapter and generate thumbnail.
+        final FilmstripItem lastItem = mDataAdapter.getFilmstripItemAt(0);
+        if (lastItem instanceof PhotoItem || lastItem instanceof VideoItem) {
+            Uri uri = lastItem.getData().getUri();
+            ((CameraAppUI) mCameraAppUI).initThumbnail(uri);
+        }
+    }
+
+    private void initThumbnail() {
+        if (mCameraAppUI instanceof CameraAppUI) {
+            if (isSecureCamera()) {
+                // refreshSecureUris();
+                ((CameraAppUI) mCameraAppUI).initThumbnailInSecureCamera(mSecureUriList);
+            } else {
+                ((CameraAppUI) mCameraAppUI).initThumbnail();
+            }
         }
     }
 

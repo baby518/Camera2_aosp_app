@@ -48,7 +48,6 @@ import com.android.camera.one.OneCameraException;
 import com.android.camera.one.OneCameraModule;
 import com.android.camera.one.config.OneCameraFeatureConfigCreator;
 import com.android.camera.session.CaptureSessionManager;
-import com.android.camera.settings.AppUpgrader;
 import com.android.camera.settings.PictureSizeLoader;
 import com.android.camera.settings.ResolutionSetting;
 import com.android.camera.settings.ResolutionUtil;
@@ -200,9 +199,6 @@ public class CameraActivity extends com.android.camera.CameraActivity implements
         mModuleManager = new ModuleManagerImpl();
 
         ModulesInfo.setupModules(mAppContext, mModuleManager, mFeatureConfig);
-
-        AppUpgrader appUpgrader = new AppUpgrader(this);
-        appUpgrader.upgrade(mSettingsManager);
 
         // Make sure the picture sizes are correctly cached for the current OS
         // version.
